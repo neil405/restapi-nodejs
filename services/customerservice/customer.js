@@ -259,15 +259,15 @@ const fs = require('fs');
 const streamToIterator = require('stream-to-iterator');
 const csv = require('fast-csv');
 
-const importCustomerCsvToDb = async (req, res, next) => {
+const importCustomerCsvToDb = async (req, res) => {
     // try {
     //     let headers = Object.keys(Customer.schema.paths)
     //         .filter(k => ['_id','__v'].indexOf(k) === -1);
     //
     //     console.log(headers);
     //
-    //     let stream = fs.createReadStream(__dirname + '/' + 'data.csv')
-    //         .pipe(csv.parse({headers}));
+    //     let stream = fs.createReadStream(__dirname + '/' + 'customerfile.csv')
+    //         .pipe(csv.parse({headers: headers}));
     //
     //
     //     const iterator = await streamToIterator(stream).init();
@@ -303,45 +303,102 @@ const importCustomerCsvToDb = async (req, res, next) => {
     //     process.exit()
     // }
 
-
-    csv
-        .parseFile(__dirname + '/' + 'data.csv', {headers: true})
-        .on("data", data => {
-            console.log(data);
-            //Removes spaces from property value in-case it does have
+    let records = [];
+    let limits = 50000;
+    fs.createReadStream(req.file.path)
+        .pipe(csv.parse({ headers: true}))
+        .on('error', error => console.error(error))
+        .on('data', data => {
+            // customize your data here
             for (var key in data) {
                 data[key] = data[key].trim();
             }
             //Create a customer Object and assign all values for it to save in database
             const customer = new Customer({
-                name: data['Name'],
-                pickupLat: data['Pick Up Lat'],
-                pickupLong: data['Pick Up Long'],
-                dropOffLat: data['Drop Off Lat'],
-                dropOffLong: data['Drop Off Long']
+                date: data['DATE'],
+                distance: data['DISTANCE'],
+                fromLat: data['FROM_LAT'],
+                fromLong: data['FROM_LON'],
+                fromStreetAddress: data['FROM_STREET_ADDRESS'],
+                onDemand: data['ON_DEMAND'],
+                patientType: data['PATIENT_TYPE'],
+                requestedPickupTime: data['REQUESTED_PICKUP_TIME'],
+                requestId: data['REQUEST_ID'],
+                routable: data['ROUTABLE'],
+                timeIsByDeparture: data['TIME_IS_BY_DEPARTURE'],
+                toLat: data['TO_LAT'],
+                toLong: data['TO_LON'],
+                toStreetAddress: data['TO_STREET_ADDRESS']
             });
-            //save in database
-            customer.save(function (err) {
-                if (err) {
-                    console.log("There is an error in processing customer data: " + err);
-                    throw boom.boomify(err);
-                } else {
-                    console.log("Customer data has been saved: " + data);
-                }
-            })
+            records.push(customer);
+            if(records.length==limits) {
+                Customer.insertMany(records);
+                records = [];
+            }
         })
         .on("error", function (error) {
             console.log("There is an error in processing: " + error);
             throw new Error('something went wrong' + error);
         })
-        .on("end", function () {
+        .on('end', rowCount => {
+            if(records.length) {
+                Customer.insertMany(records);
+                records = [];
+            }
             console.log("done");
+            return res.status(200).json({
+                'code' : 200,
+                'message': 'customer updated successfully'
+            });
         });
 
-    return res.status(200).json({
-        'message': 'customer updated successfully',
-        'data': updateCustomer
-    });
+    // csv
+    //     .parseFile(__dirname + '/' + 'customerfile.csv', {headers: true})
+    //     .on("data", data => {
+    //         console.log(data);
+    //         //Removes spaces from property value in-case it does have
+    //         for (var key in data) {
+    //             data[key] = data[key].trim();
+    //         }
+    //         //Create a customer Object and assign all values for it to save in database
+    //         const customer = new Customer({
+    //             date: data['DATE'],
+    //             distance: data['DISTANCE'],
+    //             fromLat: data['FROM_LAT'],
+    //             fromLong: data['FROM_LON'],
+    //             fromStreetAddress: data['FROM_STREET_ADDRESS'],
+    //             onDemand: data['ON_DEMAND'],
+    //             patientType: data['PATIENT_TYPE'],
+    //             requestedPickupTime: data['REQUESTED_PICKUP_TIME'],
+    //             requestId: data['REQUEST_ID'],
+    //             routable: data['ROUTABLE'],
+    //             timeIsByDeparture: data['TIME_IS_BY_DEPARTURE'],
+    //             toLat: data['TO_LAT'],
+    //             toLong: data['TO_LON'],
+    //             toStreetAddress: data['TO_STREET_ADDRESS']
+    //         });
+    //         //save in database
+    //         customer.save(function (err) {
+    //             if (err) {
+    //                 console.log("There is an error in processing customer data: " + err);
+    //                 throw boom.boomify(err);
+    //             } else {
+    //                 console.log("Customer data has been saved: " + data);
+    //             }
+    //         })
+    //     })
+    //     .on("error", function (error) {
+    //         console.log("There is an error in processing: " + error);
+    //         throw new Error('something went wrong' + error);
+    //     })
+    //     .on("end", function () {
+    //         console.log("done");
+    //     });
+    //
+    // return res.status(200).json({
+    //     'message': 'customer updated successfully',
+    //     'data': updateCustomer
+    // });
 };
 
 module.exports = {

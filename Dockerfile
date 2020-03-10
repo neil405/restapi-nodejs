@@ -1,6 +1,6 @@
 FROM node:8
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /restapi-nodejs/app
 # Install app dependencies
 COPY package*.json ./
 RUN npm install
