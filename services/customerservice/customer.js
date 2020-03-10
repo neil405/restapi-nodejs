@@ -260,8 +260,9 @@ const deleteCustomer = async (req, res, next) => {
 
 const importCustomerCsvToDb = async (req, res) => {
     let records = [];
+    let recordsError = [];
     let limits = 50000;
-
+    let counter = 0;
     fs.createReadStream(req.file.path)
         .pipe(csv.parse({ headers: true}))
         .on('error', error => console.error(error))
@@ -287,9 +288,18 @@ const importCustomerCsvToDb = async (req, res) => {
                 toLong: data['TO_LON'],
                 toStreetAddress: data['TO_STREET_ADDRESS']
             });
+
+            customer.validate( err => {
+                counter++;
+                if ( err ) {
+
+                    recordsError.push(counter);
+                }
+            });
+
             records.push(customer);
             if(records.length==limits) {
-                Customer.insertMany(records);
+                Customer.insertMany(records, {ordered: false});
                 records = [];
             }
         })
@@ -299,13 +309,20 @@ const importCustomerCsvToDb = async (req, res) => {
         })
         .on('end', rowCount => {
             if(records.length) {
-                Customer.insertMany(records);
+                Customer.insertMany(records, {ordered: false});
                 records = [];
             }
-            return res.status(200).json({
-                'code' : 200,
-                'message': 'customer updated successfully'
-            });
+            if(recordsError.length) {
+                return res.status(200).json({
+                    'code' : 200,
+                    'message': 'Some rows from the csv were not uploaded successfully. Please review rows: ' + recordsError
+                });
+            } else {
+                return res.status(200).json({
+                    'code' : 200,
+                    'message': 'CSV uploaded to database successfully'
+                });
+            }
         });
 };
 
