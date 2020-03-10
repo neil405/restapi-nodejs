@@ -292,13 +292,17 @@ const importCustomerCsvToDb = async (req, res) => {
             customer.validate( err => {
                 counter++;
                 if ( err ) {
-
+                    // keeping track of rows from csv that fail mongoose schema validation
+                    // if we want a hard stop throw error here
                     recordsError.push(counter);
                 }
             });
 
             records.push(customer);
-            if(records.length==limits) {
+            // inserting records to db once hey hit the 50,000 limit
+            if(records.length === limits) {
+                // mongoose insertMany() used, with ordered set to false will allow
+                // rows from csv that did not fail validation to be inserted to database
                 Customer.insertMany(records, {ordered: false});
                 records = [];
             }
@@ -308,7 +312,10 @@ const importCustomerCsvToDb = async (req, res) => {
             throw new Error('something went wrong' + error);
         })
         .on('end', rowCount => {
+            // if any records left insert them before returning http status
             if(records.length) {
+                // mongoose insertMany() used, with ordered set to false will allow
+                // rows from csv that did not fail validation to be inserted to database
                 Customer.insertMany(records, {ordered: false});
                 records = [];
             }
