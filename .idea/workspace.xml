@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="efd48906-4e9e-45b9-b1d6-acf562096379" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/customerservice/customerfile.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/apis/customer.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/apis/customer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/customer.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/customer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/customerservice/customer.js" beforeDir="false" afterPath="$PROJECT_DIR$/services/customerservice/customer.js" afterDir="false" />
     </list>
@@ -56,14 +51,30 @@
       <option name="presentableId" value="Default" />
       <updated>1583712730346</updated>
       <workItem from="1583712731909" duration="1195000" />
-      <workItem from="1583848562605" duration="5006000" />
+      <workItem from="1583848562605" duration="5263000" />
     </task>
+    <task id="LOCAL-00001" summary="rest api import csv code updated">
+      <created>1583854351910</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1583854351910</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="rest api import csv code updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="rest api import csv code updated" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="337" y="297" key="CommitChangelistDialog2" timestamp="1583854351236">
+      <screen x="0" y="23" width="2560" height="1345" />
+    </state>
+    <state x="337" y="297" key="CommitChangelistDialog2/0.23.2560.1345@0.23.2560.1345" timestamp="1583854351236" />
     <state width="1264" height="205" key="GridCell.Tab.0.bottom" timestamp="1583850124105">
       <screen x="0" y="23" width="2560" height="1345" />
     </state>
@@ -80,6 +91,10 @@
       <screen x="0" y="23" width="2560" height="1345" />
     </state>
     <state width="1264" height="205" key="GridCell.Tab.0.right/0.23.2560.1345@0.23.2560.1345" timestamp="1583850124104" />
+    <state x="343" y="435" key="Vcs.Push.Dialog.v2" timestamp="1583854353991">
+      <screen x="0" y="23" width="2560" height="1345" />
+    </state>
+    <state x="343" y="435" key="Vcs.Push.Dialog.v2/0.23.2560.1345@0.23.2560.1345" timestamp="1583854353991" />
     <state x="593" y="330" width="667" height="729" key="find.popup" timestamp="1583848900059">
       <screen x="0" y="23" width="2560" height="1345" />
     </state>
